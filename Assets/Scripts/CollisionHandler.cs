@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class NewEmptyCSharpScript : MonoBehaviour
+public class CollisionHandler : MonoBehaviour
 {
-    private void OnTiggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag("Poop"))
         {
