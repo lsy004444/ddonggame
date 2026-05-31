@@ -1,55 +1,72 @@
 using UnityEngine;
-using UnityEngine.UI; // UI 요소를 사용하기 위해 추가
+using UnityEngine.UI;
 
 public class FarmSlot : MonoBehaviour
 {
-    public CropData currentCropData; // 현재 심어진 작물의 데이터
-    public float plantedTime; // 작물이 심어진 시간 (Time.time)
-    public Image cropImage; // 작물 이미지를 표시할 UI Image 컴포넌트
+    public int myIndex; // 0, 1, 2...
+    public Image cropImage;          
+    public Slider growthSlider;      
+    public GameObject harvestIcon;   
 
-    // 이 슬롯이 비어있는지 확인하는 속성
-    public bool IsEmpty => currentCropData == null;
+    private SeedData currentActiveSeed;
+    private float plantedTime;
+    public bool isHarvestable = false;
 
-    // 작물을 심는 메서드 (2주차에 구현 예정)
-    public void PlantCrop(CropData crop) 
+    // 매니저가 "비었니?" 물어볼 때 답하는 변수
+    public bool IsEmpty => currentActiveSeed == null;
+
+    // 클릭하면 매니저에게 알림
+    public void OnClick()
     {
-        currentCropData = crop;
+        if (FarmManager.Instance != null)
+            FarmManager.Instance.OnSlotClicked(myIndex);
+    }
+
+    // 매니저가 심으라고 할 때 실행
+    public void PlantPoop(PoopType poop)
+    {
+        if (poop == null || poop.possibleSeeds.Count == 0) return;
+
+        int randomIndex = Random.Range(0, poop.possibleSeeds.Count);
+        currentActiveSeed = poop.possibleSeeds[randomIndex];
+
         plantedTime = Time.time;
-        // 초기 작물 이미지 설정 (성장 단계 0)
-        if (cropImage != null && currentCropData.growthSprites.Length > 0)
-        {
-            cropImage.sprite = currentCropData.growthSprites[0];
-            cropImage.enabled = true; // 이미지를 보이게 함
-        }
+        isHarvestable = false;
+        
+        cropImage.sprite = currentActiveSeed.growthSprites[0];
+        cropImage.enabled = true;
+        if(growthSlider != null) growthSlider.gameObject.SetActive(true);
+        if(harvestIcon != null) harvestIcon.SetActive(false);
     }
 
-    // 작물을 수확하는 메서드 (2주차에 구현 예정)
-    public void HarvestCrop()
-    {
-        // 수확 로직 (예: 자원 증가, 슬롯 초기화)
-        currentCropData = null;
-        plantedTime = 0;
-        if (cropImage != null)
-        {
-            cropImage.enabled = false; // 이미지를 숨김
-        }
-    }
-
-    // 작물 성장 상태 업데이트 (2주차에 구현 예정)
     public void UpdateGrowth()
     {
-        if (!IsEmpty && currentCropData.growthTime > 0)
+        if (IsEmpty || isHarvestable) return;
+
+        float elapsed = Time.time - plantedTime;
+        float progress = elapsed / currentActiveSeed.growthTime;
+
+        if (growthSlider != null) growthSlider.value = Mathf.Clamp01(progress);
+
+        int spriteIndex = Mathf.FloorToInt(progress * currentActiveSeed.growthSprites.Length);
+        spriteIndex = Mathf.Clamp(spriteIndex, 0, currentActiveSeed.growthSprites.Length - 1);
+        cropImage.sprite = currentActiveSeed.growthSprites[spriteIndex];
+
+        if (progress >= 1.0f)
         {
-            float elapsed = Time.time - plantedTime;
-            float progress = elapsed / currentCropData.growthTime;
-
-            int currentStage = Mathf.FloorToInt(progress * currentCropData.growthSprites.Length);
-            currentStage = Mathf.Clamp(currentStage, 0, currentCropData.growthSprites.Length - 1);
-
-            if (cropImage != null && currentCropData.growthSprites.Length > 0)
-            {
-                cropImage.sprite = currentCropData.growthSprites[currentStage];
-            }
+            isHarvestable = true;
+            if (growthSlider != null) growthSlider.gameObject.SetActive(false);
+            if (harvestIcon != null) harvestIcon.SetActive(true);
         }
+    }
+
+    public void Harvest()
+    {
+        if (currentActiveSeed == null) return;
+        ResourceManager.Instance.AddPoop(null, currentActiveSeed.rewardAmount);
+        currentActiveSeed = null;
+        cropImage.enabled = false;
+        isHarvestable = false;
+        if (harvestIcon != null) harvestIcon.SetActive(false);
     }
 }

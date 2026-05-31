@@ -1,19 +1,16 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewPoopType", menuName = "ScriptableObjects/Poop Type")]
 public class PoopType : ScriptableObject
 {
     public string poopName;
-    [TextArea]
     public string description;
-    public Sprite poopSprite; // 똥의 이미지
-    public PoopRarity rarity; // 희귀도 (예: Common, Uncommon, Rare)
-    // 필요하다면 추가적인 속성 (예: 가치, 효과 등)
-}
+    public Sprite poopSprite;
+    
+    public enum Rarity { Common, Uncommon, Rare }
+    public Rarity rarity;
 
-public enum PoopRarity
-{
-    Common,
-    Uncommon,
-    Rare
+    // 반드시 'SeedData'라고 적혀 있어야 합니다!
+    public List<SeedData> possibleSeeds; 
 }
