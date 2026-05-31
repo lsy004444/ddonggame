@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public int poopCount = 0;
 
     //플레이타임 6 분으로 설정
-    public float gameTime = 360f;
+    public float gameTime = 5f;
     private bool gameOver = false;
     //똥 개수 
     public TextMesh poopCountText;
@@ -36,7 +36,8 @@ public class GameManager : MonoBehaviour
 
             int minutes = (int)(gameTime / 60);
             int seconds = (int)(gameTime % 60);
-            timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+            if (timerText != null)
+                timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
         }
     }
 
