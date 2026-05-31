@@ -25,8 +25,8 @@ public class PoopSpawner : MonoBehaviour {
     void SpawnPoop()
     {
         
-            float randomX = Random.Range(-2.5f, 2.5f);
-            Vector3 spawnPos = new Vector3(randomX, 5f, 0f);
+            float randomX = Random.Range(-1.8f, 1.8f);
+            Vector3 spawnPos = new Vector3(randomX, 4f, 0f);
             GameObject selected = SelectPoop();
             Instantiate(selected, spawnPos, Quaternion.identity);
             //랜덤스폰

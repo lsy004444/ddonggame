@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +5,9 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     private float screenWidth;
-
+    //플레이어 이동범위 제한
+    public float minX = -2.3f;
+    public float maxX = 2.3f;
     void Start()
     {
         screenWidth = Screen.width;
@@ -38,5 +39,9 @@ public class PlayerController : MonoBehaviour
                 transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);
             }
         }
+
+        //이동 범위 제한
+        float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
+        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
     }
 }

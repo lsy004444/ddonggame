@@ -18,7 +18,13 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         if(instance == null)
+        {
             instance = this;
+            DontDestroyOnLoad(gameObject);
+        } else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -44,7 +50,9 @@ public class GameManager : MonoBehaviour
     public void AddPoop(int amount)
     {
         poopCount += amount;
-        poopCountText.text = "똥: " + poopCount;
+        //똥 개수 조건 추가
+        if (poopCountText != null)
+            poopCountText.text = "똥: " + poopCount;
         Debug.Log("똥 개수: " + poopCount);
     }
 
