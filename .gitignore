@@ -112,4 +112,9 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 # Auto-generated cache in Assets folder
+
+logs/
+usersettings/
+assets~HEAD
+1Week_Backup.unitypackage
 /[Aa]ssets/[Ss]ceneDependencyCache*
