@@ -1162,7 +1162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1585909537}
-  - component: {fileID: 1585909536}
+  - component: {fileID: 1585909538}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1170,22 +1170,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1585909536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1585909535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3800032c39f9c346aa33a85104ceb08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  poopCount: 0
-  gameTime: 360
-  poopCountText: {fileID: 1197376183}
-  timerText: {fileID: 334710136}
 --- !u!4 &1585909537
 Transform:
   m_ObjectHideFlags: 0
@@ -1201,6 +1185,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1585909538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585909535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a1f5bdb81f523845b6f81306c762bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  settingsPanel: {fileID: 0}
+  gameOverPanel: {fileID: 0}
+  finalScoreText: {fileID: 0}
+  playTimeLimit: 360
+  timerText: {fileID: 0}
+  timerTextMesh: {fileID: 334710136}
+  poopCount: 0
+  poopCountText: {fileID: 0}
+  poopCountTextMesh: {fileID: 1197376183}
 --- !u!1 &2069766480
 GameObject:
   m_ObjectHideFlags: 0
