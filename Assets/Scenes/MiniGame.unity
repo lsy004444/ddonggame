@@ -149,9 +149,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoopSpawner
   healthyPoop:
-  - {fileID: 609423881023773329, guid: e81e50d9217331a4faac69831c760213, type: 3}
-  - {fileID: 609423881023773329, guid: af5d24df74c378a4db72d004e2772371, type: 3}
-  - {fileID: 609423881023773329, guid: 02a715e965d8a9c47904005b1fbbf751, type: 3}
+  - {fileID: 1675884738195535869, guid: 882c98ac87233d648ada4a6941822a27, type: 3}
+  - {fileID: 8881753924000105852, guid: 30d0be9d62be06b4b88ef92126c2d20a, type: 3}
+  - {fileID: 6689777975353509250, guid: fb56c6bb86b6db34c9b07483be9b145c, type: 3}
   rarePoop:
   - {fileID: 609423881023773329, guid: f1b01c5d1e692da4f8d089de128c2ad9, type: 3}
   - {fileID: 609423881023773329, guid: 410cac1630ee79448b695a328d79f8cf, type: 3}
@@ -1230,7 +1230,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2069766480}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32f52429e11b0bc4e9903132b85d1274, type: 3}
+  m_Script: {fileID: 11500000, guid: 742ceda65f103b34a82d1af7f085bbdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HomeButtonHandler
 --- !u!61 &2069766482
