@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class PoopController : MonoBehaviour
@@ -9,7 +8,7 @@ public class PoopController : MonoBehaviour
     {
         transform.position += Vector3.down * fallSpeed * Time.deltaTime;
 
-        if(transform.position.y < -6f)
+        if (transform.position.y < -6f)
         {
             Destroy(gameObject);
         }
