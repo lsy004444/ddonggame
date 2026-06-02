@@ -26,6 +26,25 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI poopCountText;
     public TextMesh poopCountTextMesh;
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if(scene.name == "MiniGame")
+        {
+            poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+            timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -43,10 +62,14 @@ public class GameManager : MonoBehaviour
     {
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
-        currentTime = playTimeLimit;
+        
+        if (SceneManager.GetActiveScene().name == "MiniGame")
+        {    currentTime = playTimeLimit;
+            Time.timeScale = 1f;
+            gameOver = false;
+            poopCount = 0;
+        }
         Time.timeScale = 1f;
-        gameOver = false;
-        poopCount = 0;
     }
 
     private void Update()

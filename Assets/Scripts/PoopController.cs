@@ -3,6 +3,7 @@ using UnityEngine;
 public class PoopController : MonoBehaviour
 {
     public float fallSpeed = 3f;
+    public PoopType poopType;
 
     void Update()
     {

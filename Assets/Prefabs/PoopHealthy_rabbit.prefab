@@ -180,3 +180,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoopController
   fallSpeed: 3
+  poopType: {fileID: 11400000, guid: 72c0bfbd49a4fec44af66cba1a594ceb, type: 2}
