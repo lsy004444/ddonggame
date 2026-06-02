@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 using UnityEngine;
 using TMPro; // TextMeshProUGUI 사용을 위해 필수!
 using UnityEngine.SceneManagement; // 씬 전환 및 재시작을 위해 필수!
@@ -141,3 +142,186 @@ public class GameManager : MonoBehaviour
         Debug.Log("클립보드에 복사 완료: " + shareText);
     }
 }
+=======
+using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
+using System.Resources;
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager Instance { get; private set; }
+    public static GameManager instance => Instance;
+
+    [Header("UI 패널 설정")]
+    public GameObject settingsPanel;
+    public GameObject gameOverPanel;
+    public TextMeshProUGUI finalScoreText;
+
+    [Header("타이머 설정")]
+    public float playTimeLimit = 360f;
+    private float currentTime;
+    private bool gameOver = false;
+
+    [Header("타이머 UI")]
+    public TextMeshProUGUI timerText;
+    public TextMesh timerTextMesh;
+
+    [Header("똥 카운트")]
+    public TextMesh poopFliesTextMesh;
+    public int poopCount = 0;
+    public TextMeshProUGUI poopCountText;
+    public TextMesh poopCountTextMesh;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        
+        if(scene.name == "MiniGame")
+        {
+            // poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+            // timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+            // poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
+
+            // if(poopFliesTextMesh != null && ResourceManager.Instance != null)
+            // {
+            //     poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
+            // }
+            StartCoroutine(FindUIAfterLoad());
+        }
+
+        Debug.Log("poopFliesTextMesh: " + poopFliesTextMesh);
+        Debug.Log("ResourceManager: " + ResourceManager.Instance);
+        Debug.Log("똥파리 수: " + ResourceManager.Instance?.GetPoopFliesCount());
+    }
+
+    private System.Collections.IEnumerator FindUIAfterLoad()
+    {
+        yield return null; // 한 프레임 기다리기
+        poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+        timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+        poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
+        Debug.Log("코루틴 실행됨. poopFliesTextMesh: " + poopFliesTextMesh);
+        if (poopFliesTextMesh != null && ResourceManager.Instance != null)
+            poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void Start()
+    {
+        if (settingsPanel != null) settingsPanel.SetActive(false);
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+
+        poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
+
+        currentTime = playTimeLimit;
+        gameOver = false;
+        poopCount = 0;
+        Time.timeScale = 1f;
+        
+        if (SceneManager.GetActiveScene().name == "MiniGame")
+        {   poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+            timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+        }
+       
+        Debug.Log("timerTextMesh: " + timerTextMesh);
+    }
+
+    private void Update()
+    {
+        if (!gameOver && currentTime > 0)
+        {
+            currentTime -= Time.deltaTime;
+            UpdateTimerUI();
+            if (currentTime <= 0)
+            {
+                currentTime = 0;
+                gameOver = true;
+                EndGame();
+            }
+        }
+    }
+
+    private void UpdateTimerUI()
+    {
+        int minutes = Mathf.FloorToInt(currentTime / 60);
+        int seconds = Mathf.FloorToInt(currentTime % 60);
+        string time = string.Format("{0:00}:{1:00}", minutes, seconds);
+        if (timerText != null) timerText.text = time;
+        if (timerTextMesh != null) timerTextMesh.text = time;
+        if (poopFliesTextMesh != null && ResourceManager.Instance != null)
+        poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
+    }
+
+    public void AddPoop(int amount)
+    {
+        poopCount += amount;
+        if (poopCountText != null) poopCountText.text = "똥: " + poopCount;
+        if (poopCountTextMesh != null) poopCountTextMesh.text = "똥: " + poopCount;
+        Debug.Log("똥 개수 추가됨: " + poopCount);
+    }
+
+    public void EndGame()
+    {
+        gameOver = true;
+        Time.timeScale = 1f;
+        int finalScore = poopCount;
+        PlayerPrefs.SetInt("FinalScore", finalScore);
+
+        int savedPoop = PlayerPrefs.GetInt("UnhealthyPoop", 0); // 기존 저장된 똥 개수 읽기
+        PlayerPrefs.SetInt("UnhealthyPoop", savedPoop + poopCount);   // 미니게임에서 모은 똥 더하기
+        PlayerPrefs.Save();
+
+        Debug.Log($"[데이터 연동] 미니게임 똥 {poopCount}개가 메인 데이터에 누적 저장되었습니다! (총: {savedPoop + poopCount}개)");
+
+        if (ResourceManager.Instance != null)
+        {
+            // ★ 중요: "HealthyPoop" 자리에 지안님이 만든 똥 에셋(ScriptableObject)의 실제 '파일 이름'을 적어주세요!
+            // 미니게임 보상으로 줄 똥 에셋 이름이 만약 UnHealthyPoop이라면 "UnHealthyPoop"으로 적으시면 됩니다.
+            ResourceManager.Instance.AddPoopByName("HealthyPoop", poopCount); 
+        }
+        else
+        {
+            Debug.LogError("ResourceManager 인스턴스를 찾을 수 없어 미니게임 데이터가 연동되지 않았습니다.");
+        }
+        
+        SceneManager.LoadScene("EndingScene");
+        Debug.Log("게임 오버! 최종 점수: " + finalScore);
+    }
+
+    public void RetryGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ShareScore()
+    {
+        int score = PlayerPrefs.GetInt("FinalScore", 0);
+        string shareText = "나의 농장 방어 점수는 " + score + "점!";
+        GUIUtility.systemCopyBuffer = shareText;
+        Debug.Log("클립보드에 복사 완료: " + shareText);
+    }
+}
+>>>>>>> Stashed changes
