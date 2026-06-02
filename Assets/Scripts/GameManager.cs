@@ -83,7 +83,8 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
-        Time.timeScale = 0f;
+        gameOver = true;
+        Time.timeScale = 1f;
         int finalScore = poopCount;
         PlayerPrefs.SetInt("FinalScore", finalScore);
         SceneManager.LoadScene("EndingScene");

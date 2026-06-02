@@ -1384,7 +1384,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: MinigameScene
+          m_StringArgument: MiniGame
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &334528418
@@ -7745,8 +7745,10 @@ MonoBehaviour:
   finalScoreText: {fileID: 0}
   playTimeLimit: 360
   timerText: {fileID: 0}
+  timerTextMesh: {fileID: 0}
   poopCount: 0
   poopCountText: {fileID: 0}
+  poopCountTextMesh: {fileID: 0}
 --- !u!224 &2050133270
 RectTransform:
   m_ObjectHideFlags: 0

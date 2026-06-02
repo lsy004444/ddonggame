@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class HomeButtonHandler : MonoBehaviour
 {
-    private void OnMouseDown()
+    private void OnMouseUp()
     {
-        SceneManager.LoadScene("HomeScreen");
+        SceneManager.LoadScene("HomeScene");
     }
 }

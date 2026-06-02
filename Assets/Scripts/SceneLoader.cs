@@ -33,6 +33,6 @@ public class SceneLoader : MonoBehaviour
     /// </summary>
     public void GoToMiniGame()
     {
-        SceneManager.LoadScene("MiniGameScene");
+        SceneManager.LoadScene("MiniGame");
     }
 }
