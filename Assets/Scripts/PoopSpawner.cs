@@ -8,6 +8,9 @@ public class PoopSpawner : MonoBehaviour {
     public GameObject[] healthyPoop;
     //희귀똥
     public GameObject[] rarePoop;
+    //안 건강한 똥
+    public GameObject[] unhealthyPoop;
+
     public float spawnInterval = 0.01f;
     private float timer;
 
@@ -37,8 +40,10 @@ public class PoopSpawner : MonoBehaviour {
     {
         float rand = Random.Range(0f, 100f);
 
-        if(rand < 50f)
+        if(rand < 15f)
             return rarePoop[Random.Range(0, rarePoop.Length)];
+        else if (rand <52f)
+            return unhealthyPoop[Random.Range(0, unhealthyPoop.Length)];
         else
             return healthyPoop[Random.Range(0, healthyPoop.Length)];
     }

@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.InputSystem; // 유니티 새 인풋 시스템 필수 적용
 using System.Linq; // [핵심] LINQ 메서드 (Where, Select) 사용을 위해 필요합니다!
+using UnityEngine.SceneManagement;
 
 public class ResourceManager : MonoBehaviour
 {
@@ -21,6 +22,24 @@ public class ResourceManager : MonoBehaviour
 
     // [수정] 똥 인벤토리: 각 PoopType별 개수를 저장합니다.
     private Dictionary<PoopType, int> poopCounts = new Dictionary<PoopType, int>();
+
+    private void OnEnable()
+{
+    SceneManager.sceneLoaded += OnSceneLoaded;
+}
+
+private void OnDisable()
+{
+    SceneManager.sceneLoaded -= OnSceneLoaded;
+}
+
+private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    poopCountText = null;
+    poopFliesText = null;
+    UpdatePoopCountUI();
+    UpdatePoopFliesUI();
+}
 
     private void Awake()
     {
@@ -47,10 +66,10 @@ public class ResourceManager : MonoBehaviour
     private void Start()
     {
         // [테스트용] 시작 시 모든 PoopType에 대해 10개씩 지급 (나중에 삭제하거나 미니게임 연동)
-        foreach (var type in availablePoopTypes)
-        {
-            AddPoop(type, 10);
-        }
+        // foreach (var type in availablePoopTypes)
+        // {
+        //     AddPoop(type, 10);
+        // }
 
         UpdatePoopCountUI();
         UpdatePoopFliesUI();
@@ -137,6 +156,12 @@ public class ResourceManager : MonoBehaviour
 
     private void UpdatePoopCountUI()
     {
+        if (poopCountText == null)
+        {
+            GameObject obj = GameObject.Find("PoopCountText");
+            if (obj != null) poopCountText = obj.GetComponent<TextMeshProUGUI>();
+            
+        }
         if (poopCountText != null)
         {
             poopCountText.text = $"똥: {GetTotalPoopCount()}";
@@ -145,6 +170,11 @@ public class ResourceManager : MonoBehaviour
 
     private void UpdatePoopFliesUI()
     {
+        if (poopFliesText == null)
+        {
+            GameObject obj = GameObject.Find("PoopFliesText");
+            if(obj != null) poopFliesText = obj.GetComponent<TextMeshProUGUI>();
+        }
         if (poopFliesText != null)
         {
             poopFliesText.text = $"똥파리: {poopFlies}";

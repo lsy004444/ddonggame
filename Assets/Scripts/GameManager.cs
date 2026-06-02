@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Resources;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     public TextMesh timerTextMesh;
 
     [Header("똥 카운트")]
+    public TextMesh poopFliesTextMesh;
     public int poopCount = 0;
     public TextMeshProUGUI poopCountText;
     public TextMesh poopCountTextMesh;
@@ -38,11 +40,34 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        
         if(scene.name == "MiniGame")
         {
-            poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
-            timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+            // poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+            // timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+            // poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
+
+            // if(poopFliesTextMesh != null && ResourceManager.Instance != null)
+            // {
+            //     poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
+            // }
+            StartCoroutine(FindUIAfterLoad());
         }
+
+        Debug.Log("poopFliesTextMesh: " + poopFliesTextMesh);
+        Debug.Log("ResourceManager: " + ResourceManager.Instance);
+        Debug.Log("똥파리 수: " + ResourceManager.Instance?.GetPoopFliesCount());
+    }
+
+    private System.Collections.IEnumerator FindUIAfterLoad()
+    {
+        yield return null; // 한 프레임 기다리기
+        poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+        timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+        poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
+        Debug.Log("코루틴 실행됨. poopFliesTextMesh: " + poopFliesTextMesh);
+        if (poopFliesTextMesh != null && ResourceManager.Instance != null)
+            poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
     }
 
     private void Awake()
@@ -62,14 +87,20 @@ public class GameManager : MonoBehaviour
     {
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
+
+        poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
+
+        currentTime = playTimeLimit;
+        gameOver = false;
+        poopCount = 0;
+        Time.timeScale = 1f;
         
         if (SceneManager.GetActiveScene().name == "MiniGame")
-        {    currentTime = playTimeLimit;
-            Time.timeScale = 1f;
-            gameOver = false;
-            poopCount = 0;
+        {   poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+            timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
         }
-        Time.timeScale = 1f;
+       
+        Debug.Log("timerTextMesh: " + timerTextMesh);
     }
 
     private void Update()
@@ -94,6 +125,8 @@ public class GameManager : MonoBehaviour
         string time = string.Format("{0:00}:{1:00}", minutes, seconds);
         if (timerText != null) timerText.text = time;
         if (timerTextMesh != null) timerTextMesh.text = time;
+        if (poopFliesTextMesh != null && ResourceManager.Instance != null)
+        poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
     }
 
     public void AddPoop(int amount)

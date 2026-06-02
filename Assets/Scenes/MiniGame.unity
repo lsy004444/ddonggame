@@ -156,6 +156,10 @@ MonoBehaviour:
   - {fileID: 609423881023773329, guid: f1b01c5d1e692da4f8d089de128c2ad9, type: 3}
   - {fileID: 609423881023773329, guid: 410cac1630ee79448b695a328d79f8cf, type: 3}
   - {fileID: 609423881023773329, guid: 5f1b9e7eb8cb31e40b8917650fdbbfd0, type: 3}
+  unhealthyPoop:
+  - {fileID: 4947608631092250368, guid: a26074783d26a974f8d6d341f54c60c7, type: 3}
+  - {fileID: 5519262692234766213, guid: 37323d181e483414e8b3f1a73bcc0158, type: 3}
+  - {fileID: 7780054630340016188, guid: 53c1681143ee5b74b94d16a1b06bdef0, type: 3}
   spawnInterval: 0.01
 --- !u!4 &5028737
 Transform:
@@ -1153,6 +1157,110 @@ Transform:
   m_Children: []
   m_Father: {fileID: 609237398}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1564087404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1564087407}
+  - component: {fileID: 1564087406}
+  - component: {fileID: 1564087405}
+  m_Layer: 0
+  m_Name: PoopFilesText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!102 &1564087405
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564087404}
+  m_Text: "\uB625\uD30C\uB9AC \uAC1C\uC218: 0"
+  m_OffsetZ: 0
+  m_CharacterSize: 0.3
+  m_LineSpacing: 1
+  m_Anchor: 0
+  m_Alignment: 0
+  m_TabSize: 4
+  m_FontSize: 0
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4294967295
+--- !u!23 &1564087406
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564087404}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!4 &1564087407
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564087404}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.5, y: 3.98, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1585909535
 GameObject:
   m_ObjectHideFlags: 0
@@ -1203,9 +1311,66 @@ MonoBehaviour:
   playTimeLimit: 360
   timerText: {fileID: 0}
   timerTextMesh: {fileID: 334710136}
+  poopFliesTextMesh: {fileID: 1564087405}
   poopCount: 0
   poopCountText: {fileID: 0}
   poopCountTextMesh: {fileID: 1197376183}
+--- !u!1 &1739902833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1739902835}
+  - component: {fileID: 1739902834}
+  m_Layer: 0
+  m_Name: ResouceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1739902834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739902833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0a5ab18bd713e940b27683b4946aaf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
+  poopCountText: {fileID: 0}
+  poopFliesText: {fileID: 0}
+  availablePoopTypes:
+  - {fileID: 11400000, guid: b2a6060a6b1409e47847be1dbc97abdb, type: 2}
+  - {fileID: 11400000, guid: bf85de9c80a266d4689fca92ceb75d40, type: 2}
+  - {fileID: 11400000, guid: 72c0bfbd49a4fec44af66cba1a594ceb, type: 2}
+  - {fileID: 11400000, guid: 7dc0d77851837fc4992d3c88e5227393, type: 2}
+  - {fileID: 11400000, guid: ae83640281f19f741afdb17f86f5bf42, type: 2}
+  - {fileID: 11400000, guid: 2338ec61b445b864c8a43bfe9fbc1f86, type: 2}
+  - {fileID: 11400000, guid: 7f6e1470c6f281244994ff6536e75514, type: 2}
+  - {fileID: 11400000, guid: 2176e272e36f1ff429ac59aa5e459fc8, type: 2}
+  - {fileID: 11400000, guid: 7ff0415bc4c95cc4197a298c3af2b2d8, type: 2}
+--- !u!4 &1739902835
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739902833}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.8977, y: 1.52011, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2069766480
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,3 +1549,5 @@ SceneRoots:
   - {fileID: 2069766485}
   - {fileID: 609237398}
   - {fileID: 812124265}
+  - {fileID: 1739902835}
+  - {fileID: 1564087407}
