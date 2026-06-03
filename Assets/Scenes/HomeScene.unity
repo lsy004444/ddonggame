@@ -8088,7 +8088,6 @@ MonoBehaviour:
   finalScoreText: {fileID: 0}
   playTimeLimit: 360
   timerText: {fileID: 0}
->>>>>>> Stashed changes
   poopCount: 0
   poopCountText: {fileID: 0}
 --- !u!224 &2050133270
