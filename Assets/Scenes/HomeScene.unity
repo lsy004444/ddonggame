@@ -8088,10 +8088,6 @@ MonoBehaviour:
   finalScoreText: {fileID: 0}
   playTimeLimit: 360
   timerText: {fileID: 0}
-<<<<<<< Updated upstream
-=======
-  timerTextMesh: {fileID: 0}
-  poopFliesTextMesh: {fileID: 0}
 >>>>>>> Stashed changes
   poopCount: 0
   poopCountText: {fileID: 0}
