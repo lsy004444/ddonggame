@@ -37,6 +37,19 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 {
     poopCountText = null;
     poopFliesText = null;
+    StartCoroutine(ReconnectUI());
+}
+
+private System.Collections.IEnumerator ReconnectUI()
+{
+    yield return null;
+    
+    GameObject countObj = GameObject.Find("PoopCountText");
+    if (countObj != null) poopCountText = countObj.GetComponent<TextMeshProUGUI>();
+    
+    GameObject fliesObj = GameObject.Find("PoopFliesText");
+    if (fliesObj != null) poopFliesText = fliesObj.GetComponent<TextMeshProUGUI>();
+    
     UpdatePoopCountUI();
     UpdatePoopFliesUI();
 }
@@ -61,6 +74,7 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
                 poopCounts.Add(type, 0);
             }
         }
+        LoadData();
     }
 
     private void Start()
@@ -179,5 +193,80 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             poopFliesText.text = $"똥파리: {poopFlies}";
         }
+    }
+    public void AddPoopByName(string assetName, int amount)
+    {
+        if (availablePoopTypes == null || availablePoopTypes.Length == 0) return;
+
+        // 인스펙터에 등록된 9종의 똥 중 파일 이름(예: "HealthyPoop")이 일치하는 것을 찾습니다.
+        PoopType target = System.Array.Find(availablePoopTypes, p => p.name == assetName);
+        
+        if (target != null)
+        {
+            AddPoop(target, amount); // 기존 인벤토리 추가 함수 호출
+            SaveData();              // 변경된 데이터 기기에 영구 저장
+        }
+        else
+        {
+            Debug.LogError($"[ResourceManager] '{assetName}' 에셋을 availablePoopTypes 배열에서 찾을 수 없습니다! 인스펙터를 확인하세요.");
+        }
+    }
+
+
+    public void SaveData()
+    {
+        PlayerPrefs.SetInt("PoopFliesData", poopFlies); // 똥파리 개수 저장
+        
+        foreach (var pair in poopCounts)
+        {
+            if (pair.Key != null)
+            {
+                // 각 똥 에셋의 이름을 키값으로 삼아 개수를 저장 (예: Poop_HealthyPoop)
+                PlayerPrefs.SetInt("Poop_" + pair.Key.name, pair.Value);
+            }
+        }
+        PlayerPrefs.Save();
+        Debug.Log("<color=green>[데이터 저장 완료]</color> 똥 인벤토리와 똥파리가 저장되었습니다.");
+    }
+    
+    public void LoadData()
+    {
+        poopFlies = PlayerPrefs.GetInt("PoopFliesData", 0);
+        
+        // 딕셔너리에 등록된 모든 똥 종류의 기존 저장값을 불러옴
+        var keys = new List<PoopType>(poopCounts.Keys);
+        foreach (var type in keys)
+        {
+            if (type != null)
+            {
+                poopCounts[type] = PlayerPrefs.GetInt("Poop_" + type.name, 0);
+            }
+        }
+        Debug.Log("<color=green>[데이터 로드 완료]</color> 이전 저장 데이터를 성공적으로 불러왔습니다.");
+    }
+    public string GetInventoryBreakdown()
+    {
+        // 텍스트를 효율적으로 이어 붙이기 위한 툴입니다.
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        
+        sb.AppendLine("<size=110%><b><color=#FFD700>💩 똥 보관함 목록</color></b></size>");
+        sb.AppendLine("-----------------------------");
+
+        bool hasItem = false;
+        foreach (var pair in poopCounts)
+        {
+            if (pair.Key != null && pair.Value > 0) // 0개보다 많이 가진 똥만 보여줍니다.
+            {
+                sb.AppendLine($"{pair.Key.poopName} : <color=white>{pair.Value}개</color>");
+                hasItem = true;
+            }
+        }
+
+        if (!hasItem)
+        {
+            sb.AppendLine("<color=gray>보관함이 비어있습니다.</color>");
+        }
+
+        return sb.ToString();
     }
 }
