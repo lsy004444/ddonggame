@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Resources;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,14 +14,13 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverPanel;
     public TextMeshProUGUI finalScoreText;
 
-    [Header("타이머 설정")]
+    [Header ("타이머 설정")]
     public float playTimeLimit = 360f;
     private float currentTime;
     private bool gameOver = false;
 
-    [Header("타이머 UI")]
-    public TextMeshProUGUI timerText;
-    public TextMesh timerTextMesh;
+    [Header ("타이머 슬라이더")]
+    public Slider timerSlider;
 
     [Header("똥 카운트")]
     public TextMesh poopFliesTextMesh;
@@ -63,7 +63,6 @@ public class GameManager : MonoBehaviour
     {
         yield return null; // 한 프레임 기다리기
         poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
-        timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
         poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
         Debug.Log("코루틴 실행됨. poopFliesTextMesh: " + poopFliesTextMesh);
         if (poopFliesTextMesh != null && ResourceManager.Instance != null)
@@ -97,10 +96,8 @@ public class GameManager : MonoBehaviour
         
         if (SceneManager.GetActiveScene().name == "MiniGame")
         {   poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
-            timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+            
         }
-       
-        Debug.Log("timerTextMesh: " + timerTextMesh);
     }
 
     private void Update()
@@ -123,8 +120,8 @@ public class GameManager : MonoBehaviour
         int minutes = Mathf.FloorToInt(currentTime / 60);
         int seconds = Mathf.FloorToInt(currentTime % 60);
         string time = string.Format("{0:00}:{1:00}", minutes, seconds);
-        if (timerText != null) timerText.text = time;
-        if (timerTextMesh != null) timerTextMesh.text = time;
+        if(timerSlider != null)
+            timerSlider.value = currentTime;
         if (poopFliesTextMesh != null && ResourceManager.Instance != null)
         poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
     }

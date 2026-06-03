@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
+    public float moveSpeed = 10f;
     private float screenWidth;
     //플레이어 이동범위 제한
     public float minX = -2.3f;
@@ -15,6 +15,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+        Camera cam = Camera.main;
+        float camWidth = cam.orthographicSize * cam.aspect;
+        float minX = -camWidth + 0.5f;
+        float maxX = camWidth - 0.5f;
+        
         Vector2 move = Keyboard.current != null ? 
             new Vector2(
                 (Keyboard.current.rightArrowKey.isPressed ? 1 : 0) - 

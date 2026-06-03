@@ -1,5 +1,6 @@
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PoopSpawner : MonoBehaviour {
@@ -12,6 +13,8 @@ public class PoopSpawner : MonoBehaviour {
     public GameObject[] unhealthyPoop;
 
     public float spawnInterval = 0.01f;
+
+    public float poopScale = 1.5f;
     private float timer;
 
     void Update()
@@ -25,15 +28,25 @@ public class PoopSpawner : MonoBehaviour {
         }
     }
    
+    public float poopFallSpeed = 10f;
+
     void SpawnPoop()
     {
+        Camera cam = Camera.main;
+        float camHeight = cam.orthographicSize;
+        float camWidth = camHeight * cam.aspect;
+
+        float randomX = Random.Range(-camWidth + 0.5f, camWidth - 0.5f);
+        Vector3 spawnPos = new Vector3(randomX, camHeight + 1f, 0f);
+        GameObject selected = SelectPoop();
+        GameObject poop = Instantiate(selected, spawnPos, Quaternion.identity);
+
+        poop.transform.localScale = Vector3.one * poopScale;
         
-            float randomX = Random.Range(-1.8f, 1.8f);
-            Vector3 spawnPos = new Vector3(randomX, 4f, 0f);
-            GameObject selected = SelectPoop();
-            Instantiate(selected, spawnPos, Quaternion.identity);
-            //랜덤스폰
-            spawnInterval = Random.Range(0.2f, 1.5f);
+        PoopController pc = poop.GetComponent<PoopController>();
+        if (pc != null) pc.fallSpeed = poopFallSpeed;
+        
+        spawnInterval = Random.Range(0.2f, 1.5f);
     }
 
     GameObject SelectPoop()
