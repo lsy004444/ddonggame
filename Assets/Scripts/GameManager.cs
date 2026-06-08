@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public static GameManager instance => Instance;
 
+    private bool isMiniGame = false;
+
     [Header("UI 패널 설정")]
     public GameObject settingsPanel;
     public GameObject gameOverPanel;
@@ -39,10 +41,35 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        //확인용 주석 추가
+        Debug.Log("OnSceneLoaded 불림: " + scene.name);
+        Debug.Log("씬 로드됨: " + scene.name + " isMiniGame: " + isMiniGame); 
         if(scene.name == "MiniGame")
+            {
+                isMiniGame = true;
+                
+                Time.timeScale = 1f;
+                Debug.Log("MiniGame 리셋됨 currentTime: " + currentTime + " isMiniGame: " + isMiniGame);
+                StartCoroutine(FindUIAfterLoad());
+            }
+        if(scene.name == "EndingScene")
+            {
+                isMiniGame = false;
+                Camera mainCam = Camera.main;
+                if(mainCam != null)
+                {
+                    mainCam.transform.position = new Vector3(0, 0, -10);
+                    mainCam.orthographicSize = 5;
+                    mainCam.clearFlags = CameraClearFlags.SolidColor;
+                    mainCam.backgroundColor = Color.white;
+                }
+                return;
+            }
+        if(scene.name == "HomeScene")
         {
-            StartCoroutine(FindUIAfterLoad());
+            isMiniGame = false;
         }
+        
         Debug.Log("ResourceManager: " + ResourceManager.Instance);
         Debug.Log("똥파리 수: " + ResourceManager.Instance?.GetPoopFliesCount());
     }
@@ -50,10 +77,11 @@ public class GameManager : MonoBehaviour
     private System.Collections.IEnumerator FindUIAfterLoad()
     {
         yield return null;
-        poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
-        poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
-        if (poopFliesTextMesh != null && ResourceManager.Instance != null)
-            poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
+    poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+    poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
+    timerSlider = GameObject.Find("TimeSlider")?.GetComponent<Slider>(); // ← 추가
+    if (poopFliesTextMesh != null && ResourceManager.Instance != null)
+        poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
     }
 
     private void Awake()
@@ -71,8 +99,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        if (settingsPanel != null) settingsPanel.SetActive(false);
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        isMiniGame = (SceneManager.GetActiveScene().name == "MiniGame");
+        currentTime = playTimeLimit;
+        gameOver = false;
 
         poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
 
@@ -85,22 +114,41 @@ public class GameManager : MonoBehaviour
         {
             poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
         }
+
+         Debug.Log("GameManager Start() 호출됨 - 현재 씬: " + SceneManager.GetActiveScene().name);
     }
 
     private void Update()
     {
-        if (!gameOver && currentTime > 0)
-        {
-            currentTime -= Time.deltaTime;
-            UpdateTimerUI();
-            if (currentTime <= 0)
+       
+            if (!gameOver && currentTime > 0)
             {
-                currentTime = 0;
-                gameOver = true;
-                EndGame();
+                currentTime -= Time.deltaTime;
+                UpdateTimerUI();
+                if (currentTime <= 0)
+                {
+                    currentTime = 0;
+                    EndGame();
+                }
             }
-        }
     }
+
+    public void EndGame()
+{
+    if (gameOver) return;
+    gameOver = true;
+    Time.timeScale = 1f;
+
+    PlayerPrefs.SetInt("FinalScore", poopCount);
+    int savedPoop = PlayerPrefs.GetInt("UnhealthyPoop", 0);
+    PlayerPrefs.SetInt("UnhealthyPoop", savedPoop + poopCount);
+    PlayerPrefs.Save();
+
+   
+
+    Debug.Log("EndingScene으로 이동 시도");
+    SceneManager.LoadScene("EndingScene");
+}
 
     private void UpdateTimerUI()
     {
@@ -118,28 +166,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("똥 개수 추가됨: " + poopCount);
     }
 
-    public void EndGame()
-    {
-        gameOver = true;
-        Time.timeScale = 1f;
-        int finalScore = poopCount;
-        PlayerPrefs.SetInt("FinalScore", finalScore);
-
-        int savedPoop = PlayerPrefs.GetInt("UnhealthyPoop", 0);
-        PlayerPrefs.SetInt("UnhealthyPoop", savedPoop + poopCount);
-        PlayerPrefs.Save();
-
-        if (ResourceManager.Instance != null)
-        {
-            ResourceManager.Instance.AddPoopByName("HealthyPoop", poopCount);
-        }
-
-        SceneManager.LoadScene("EndingScene");
-        Debug.Log("게임 오버! 최종 점수: " + finalScore);
-    }
-
+    
     public void RetryGame()
     {
+        isMiniGame = true;
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

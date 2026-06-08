@@ -17,7 +17,7 @@ public class EndingManager : MonoBehaviour
 
     void Start()
     {
-        int poop = GameManager.instance.poopCount;
+        int poop = GameManager.instance != null ? GameManager.instance.poopCount : 0;
         int poopFlies = ResourceManager.Instance != null ? ResourceManager.Instance.GetPoopFliesCount() : 0;
         int finalScore = (poop * 10) + poopFlies;
 

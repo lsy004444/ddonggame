@@ -2182,7 +2182,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 941434880}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 360
+  m_MaxValue: 20
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
@@ -3176,14 +3176,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a1f5bdb81f523845b6f81306c762bd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  settingsPanel: {fileID: 0}
+  settingsPanel: {fileID: 609237393}
   gameOverPanel: {fileID: 0}
   finalScoreText: {fileID: 0}
   playTimeLimit: 20
   timerSlider: {fileID: 1022963760}
   poopFliesTextMesh: {fileID: 0}
   poopCount: 0
-  poopCountText: {fileID: 0}
+  poopCountText: {fileID: 1197376186}
   poopCountTextMesh: {fileID: 0}
 --- !u!1 &1606531497
 GameObject:
@@ -3250,8 +3250,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a5ab18bd713e940b27683b4946aaf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
-  poopCountText: {fileID: 0}
-  poopFliesText: {fileID: 0}
+  poopCountText: {fileID: 1197376186}
+  poopFliesText: {fileID: 1564087408}
   availablePoopTypes:
   - {fileID: 11400000, guid: b2a6060a6b1409e47847be1dbc97abdb, type: 2}
   - {fileID: 11400000, guid: bf85de9c80a266d4689fca92ceb75d40, type: 2}
