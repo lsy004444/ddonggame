@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq; 
 
 public class FarmManager : MonoBehaviour
 {
@@ -24,36 +24,19 @@ public class FarmManager : MonoBehaviour
 
     private void Start()
     {
-        // 정적 데이터 저장소가 한 번도 초기화되지 않았다면 (게임 첫 실행 시) 초기화 크기 설정
-        if (!FarmDataStorage.IsInitialized)
-        {
-            FarmDataStorage.Initialize(farmSlots.Count);
-            return; 
-        }
-
-        // 미니게임에 갔다가 다시 홈 화면으로 돌아왔을 때 데이터 복구 프로세스
-        for (int i = 0; i < farmSlots.Count; i++)
-        {
-            if (farmSlots[i] == null) continue;
-
-            // [수정 완료] 새 구조에 맞게 SeedData, float, bool을 정적 저장소에서 꺼내옵니다.
-            SeedData savedSeed = FarmDataStorage.PlantedSeeds[i];
-            float savedTime = FarmDataStorage.PlantedTimes[i];
-            bool savedHarvestable = FarmDataStorage.HarvestableStates[i];
-
-            // 해당 자리에 심겨진 작물 데이터가 존재한다면 밭 복구 함수 호출
-            if (savedSeed != null)
-            {
-                // [수정 완료] 새롭게 바뀐 FarmSlot의 RestoreSlot 인자값(SeedData, float, bool)과 완벽 매칭! (CS1503 해결)
-                farmSlots[i].RestoreSlot(savedSeed, savedTime, savedHarvestable);
-                Debug.Log($"<color=green>[FarmManager]</color> {i}번 밭 복구 완료: {savedSeed.seedName}");
-            }
-        }
+        // 씬이 시작될 때 저장된 밭 데이터를 불러옵니다.
+        LoadFarmData();
     }
 
     private void OnDisable()
     {
-        // 미니게임 씬으로 이동할 때, 현재 모든 밭의 최신 상태를 정적 클래스에 백업합니다.
+        // 미니게임 씬 등으로 이동하거나 꺼질 때, 현재 모든 밭의 최신 상태를 백업합니다.
+        SaveFarmData();
+    }
+
+    // ★ [구조 수정] SceneLoader 및 OnDisable에서 안전하게 호출할 수 있는 데이터 저장 함수
+    public void SaveFarmData()
+    {
         if (farmSlots == null || farmSlots.Count == 0) return;
 
         if (!FarmDataStorage.IsInitialized)
@@ -67,13 +50,14 @@ public class FarmManager : MonoBehaviour
 
             if (farmSlots[i].IsEmpty)
             {
+                // 빈 밭이라면 저장소 데이터 초기화
                 FarmDataStorage.PlantedSeeds[i] = null;
                 FarmDataStorage.PlantedTimes[i] = 0f;
                 FarmDataStorage.HarvestableStates[i] = false;
             }
             else
             {
-                // [수정 완료] 새 FarmSlot에 맞게 currentActiveSeed, plantedTime, isHarvestable을 저장합니다. (CS1061 해결)
+                // 작물이 자라는 중이라면 현재 슬롯의 실시간 정보 백업
                 FarmDataStorage.PlantedSeeds[i] = farmSlots[i].currentActiveSeed;
                 FarmDataStorage.PlantedTimes[i] = farmSlots[i].plantedTime;
                 FarmDataStorage.HarvestableStates[i] = farmSlots[i].isHarvestable;
@@ -82,14 +66,41 @@ public class FarmManager : MonoBehaviour
         Debug.Log("<color=yellow>[FarmManager]</color> 모든 밭 데이터가 안전하게 Static 저장소에 백업되었습니다.");
     }
 
+    // ★ [구조 수정] 첫 실행 혹은 미니게임에서 홈 화면으로 돌아왔을 때 데이터를 복구하는 함수
+    public void LoadFarmData()
+    {
+        // 정적 데이터 저장소가 한 번도 초기화되지 않았다면 (게임 첫 실행 시) 초기화 크기만 설정 후 리턴
+        if (!FarmDataStorage.IsInitialized)
+        {
+            FarmDataStorage.Initialize(farmSlots.Count);
+            return; 
+        }
+
+        // 저장소에 기록된 데이터들을 기반으로 밭 상태 복구 프로세스 진행
+        for (int i = 0; i < farmSlots.Count; i++)
+        {
+            if (farmSlots[i] == null) continue;
+
+            // 정적 저장소에서 알맞은 인덱스의 데이터를 꺼내옵니다.
+            SeedData savedSeed = FarmDataStorage.PlantedSeeds[i];
+            float savedTime = FarmDataStorage.PlantedTimes[i];
+            bool savedHarvestable = FarmDataStorage.HarvestableStates[i];
+
+            // 해당 자리에 심겨진 작물 데이터가 존재한다면 밭 복구 함수 호출
+            if (savedSeed != null)
+            {
+                farmSlots[i].RestoreSlot(savedSeed, savedTime, savedHarvestable);
+                Debug.Log($"<color=green>[FarmManager]</color> {i}번 밭 복구 완료: {savedSeed.seedName}");
+            }
+        }
+    }
+
     public void OnSlotClicked(int index)
     {
         if (index < 0 || index >= farmSlots.Count) return;
 
         FarmSlot slot = farmSlots[index];
         if (slot == null) return;
-
-        Debug.Log($"<color=cyan>[FarmManager]</color> {index}번 밭 클릭 처리 시작.");
 
         if (slot.IsEmpty)
         {
@@ -111,7 +122,7 @@ public class FarmManager : MonoBehaviour
 }
 
 // ===================================================================
-// [수정 완료] 지안님의 FarmSlot 시스템에 최적화된 정적 데이터 저장소
+// 지안님의 FarmSlot 시스템에 최적화된 정적 데이터 저장소 (Static Class)
 // ===================================================================
 public static class FarmDataStorage
 {

@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro; // TextMeshProUGUI 사용을 위해 필수!
 using UnityEngine.SceneManagement; // 씬 전환 및 재시작을 위해 필수!
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,6 +27,11 @@ public class GameManager : MonoBehaviour
     public int poopCount = 0;
     public TextMeshProUGUI poopCountText;
     public TextMesh poopCountTextMesh;
+
+    [Header("바구니 설정")]
+    [Tooltip("바구니가 가득 차는 최대 똥 개수입니다. 인스펙터에서 수정 가능합니다.")]
+    public int maxBasketCapacity = 10; 
+    private FarmerVisual farmerVisual; 
 
     private void OnEnable()
     {
@@ -59,7 +65,14 @@ public class GameManager : MonoBehaviour
         timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
         poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
         
-        Debug.Log("코루틴 실행됨. poopFliesTextMesh: " + poopFliesTextMesh);
+        // [수정 완료] 경고 억제를 위해 최신 FindAnyObjectByType 사용 및 비주얼 동기화
+        farmerVisual = FindAnyObjectByType<FarmerVisual>();
+        if (farmerVisual != null)
+        {
+            farmerVisual.UpdateBasketVisual(poopCount, maxBasketCapacity);
+        }
+
+        Debug.Log("코루틴 실행됨. poopFliesTextMesh: " + poopFliesTextMesh + " / FarmerVisual: " + farmerVisual);
         
         if (poopFliesTextMesh != null && ResourceManager.Instance != null)
             poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
@@ -94,6 +107,10 @@ public class GameManager : MonoBehaviour
         {   
             poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
             timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+            
+            // [수정 완료] 최신 FindAnyObjectByType 사용 및 시작 시 바구니 초기화
+            farmerVisual = FindAnyObjectByType<FarmerVisual>();
+            if (farmerVisual != null) farmerVisual.UpdateBasketVisual(poopCount, maxBasketCapacity);
         }
        
         Debug.Log("timerTextMesh: " + timerTextMesh);
@@ -133,6 +150,12 @@ public class GameManager : MonoBehaviour
         poopCount += amount;
         if (poopCountText != null) poopCountText.text = "똥: " + poopCount;
         if (poopCountTextMesh != null) poopCountTextMesh.text = "똥: " + poopCount;
+        
+        if (farmerVisual != null)
+        {
+            farmerVisual.UpdateBasketVisual(poopCount, maxBasketCapacity);
+        }
+
         Debug.Log("똥 개수 추가됨: " + poopCount);
     }
 
