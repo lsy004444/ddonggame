@@ -9,6 +9,8 @@ public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
 
+    public HashSet<string> discoveredPoops = new HashSet<string>();
+
     [Header("UI 연결")]
     [SerializeField] private TextMeshProUGUI poopCountText;
     [SerializeField] private TextMeshProUGUI poopFliesText; // 화폐(똥파리) UI 텍스트 칸
@@ -23,36 +25,49 @@ public class ResourceManager : MonoBehaviour
     // [수정] 똥 인벤토리: 각 PoopType별 개수를 저장합니다.
     private Dictionary<PoopType, int> poopCounts = new Dictionary<PoopType, int>();
 
+    [ContextMenu("도감 초기화 (테스트용)")]
+    public void ResetDiscoveredData()
+    {
+        foreach (var type in availablePoopTypes)
+        {
+            if (type != null)
+                PlayerPrefs.DeleteKey("Discovered_" + type.name);
+        }
+        discoveredPoops.Clear();
+        PlayerPrefs.Save();
+        Debug.Log("도감 초기화 완료");
+    }
+
     private void OnEnable()
-{
-    SceneManager.sceneLoaded += OnSceneLoaded;
-}
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
-private void OnDisable()
-{
-    SceneManager.sceneLoaded -= OnSceneLoaded;
-}
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
-private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-{
-    poopCountText = null;
-    poopFliesText = null;
-    StartCoroutine(ReconnectUI());
-}
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        poopCountText = null;
+        poopFliesText = null;
+        StartCoroutine(ReconnectUI());
+    }
 
-private System.Collections.IEnumerator ReconnectUI()
-{
-    yield return null;
-    
-    GameObject countObj = GameObject.Find("PoopCountText");
-    if (countObj != null) poopCountText = countObj.GetComponent<TextMeshProUGUI>();
-    
-    GameObject fliesObj = GameObject.Find("PoopFliesText");
-    if (fliesObj != null) poopFliesText = fliesObj.GetComponent<TextMeshProUGUI>();
-    
-    UpdatePoopCountUI();
-    UpdatePoopFliesUI();
-}
+    private System.Collections.IEnumerator ReconnectUI()
+    {
+        yield return null;
+        
+        GameObject countObj = GameObject.Find("PoopCountText");
+        if (countObj != null) poopCountText = countObj.GetComponent<TextMeshProUGUI>();
+        
+        GameObject fliesObj = GameObject.Find("PoopFliesText");
+        if (fliesObj != null) poopFliesText = fliesObj.GetComponent<TextMeshProUGUI>();
+        
+        UpdatePoopCountUI();
+        UpdatePoopFliesUI();
+    }
 
     private void Awake()
     {
@@ -66,16 +81,16 @@ private System.Collections.IEnumerator ReconnectUI()
             DontDestroyOnLoad(gameObject);
         }
 
-        // [수정] 인벤토리 초기화
-        foreach (var type in availablePoopTypes)
-        {
-            if (!poopCounts.ContainsKey(type))
+            // [수정] 인벤토리 초기화
+            foreach (var type in availablePoopTypes)
             {
-                poopCounts.Add(type, 0);
+                if (!poopCounts.ContainsKey(type))
+                {
+                    poopCounts.Add(type, 0);
+                }
             }
+            LoadData();
         }
-        LoadData();
-    }
 
     private void Start()
     {
@@ -128,6 +143,14 @@ private System.Collections.IEnumerator ReconnectUI()
         {
             poopCounts.Add(poopType, amount);
         }
+        if (!discoveredPoops.Contains(poopType.name))
+        {
+            discoveredPoops.Add(poopType.name);
+            PlayerPrefs.SetInt("Discovered_" + poopType.name, 1);
+            PlayerPrefs.Save();
+            Debug.Log($"<color=cyan>[도감 등록]</color> {poopType.poopName} 최초 발견!");
+        }
+
         Debug.Log($"{poopType.poopName} 획득! 현재: {poopCounts[poopType]}개");
         UpdatePoopCountUI();
     }
@@ -240,9 +263,18 @@ private System.Collections.IEnumerator ReconnectUI()
             if (type != null)
             {
                 poopCounts[type] = PlayerPrefs.GetInt("Poop_" + type.name, 0);
+                if (PlayerPrefs.GetInt("Discovered_" + type.name, 0) == 1)
+                    {
+                        discoveredPoops.Add(type.name);
+                    }
             }
         }
         Debug.Log("<color=green>[데이터 로드 완료]</color> 이전 저장 데이터를 성공적으로 불러왔습니다.");
+    }
+
+    public bool IsDiscovered(PoopType type)
+    {
+        return type != null && discoveredPoops.Contains(type.name);
     }
     public string GetInventoryBreakdown()
     {

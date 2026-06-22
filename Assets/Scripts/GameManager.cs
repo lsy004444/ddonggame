@@ -161,6 +161,8 @@ public class GameManager : MonoBehaviour
     public void AddPoop(int amount)
     {
         poopCount += amount;
+        if (poopCount < 0 ) poopCount = 0;
+        
         if (poopCountText != null) poopCountText.text = "" + poopCount;
         if (poopCountTextMesh != null) poopCountTextMesh.text = "" + poopCount;
         Debug.Log("똥 개수 추가됨: " + poopCount);
@@ -180,5 +182,16 @@ public class GameManager : MonoBehaviour
         string shareText = "나의 농장 방어 점수는 " + score + "점!";
         GUIUtility.systemCopyBuffer = shareText;
         Debug.Log("클립보드에 복사 완료: " + shareText);
+    }
+
+    //setting 창 열었을 때 게임 멈추기
+    public void PauseGame()
+    {
+        Time.timeScale = 0f;
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f;
     }
 }

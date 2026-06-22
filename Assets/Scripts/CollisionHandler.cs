@@ -21,5 +21,13 @@ public class CollisionHandler : MonoBehaviour
             }
             Destroy(other.gameObject);
         }
+        else if (other.CompareTag("Tissue"))
+        {
+            if (GameManager.instance != null)
+                GameManager.instance.AddPoop(-5);
+
+            Debug.Log("휴지 받음! 똥 5개 감소");
+            Destroy(other.gameObject);
+        }
     }
 }

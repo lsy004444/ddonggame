@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0d859b0a26b1e746b9ff82a01e24cad, type: 3}
   m_Name: CartoonPoop
   m_EditorClassIdentifier: 
-  poopName: 
+  poopName: "\uB9CC\uD654\uB625"
   description: 
   poopSprite: {fileID: 0}
   rarity: 0

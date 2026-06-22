@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 10f;
     private float screenWidth;
-    //플레이어 이동범위 제한
-    public float minX = -2.3f;
-    public float maxX = 2.3f;
+    private bool isDragging = false;
+
     void Start()
     {
         screenWidth = Screen.width;
@@ -15,39 +15,94 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
         Camera cam = Camera.main;
         float camWidth = cam.orthographicSize * cam.aspect;
         float minX = -camWidth + 0.5f;
         float maxX = camWidth - 0.5f;
-        
-        Vector2 move = Keyboard.current != null ? 
-            new Vector2(
-                (Keyboard.current.rightArrowKey.isPressed ? 1 : 0) - 
-                (Keyboard.current.leftArrowKey.isPressed ? 1 : 0), 0) 
-            : Vector2.zero;
 
-        transform.Translate(new Vector3(move.x, 0, 0) * moveSpeed * Time.deltaTime);
-
-       
-
-        if(Input.touchCount > 0)
+        // 키보드 입력
+        if (Keyboard.current != null)
         {
-            Touch touch = Input.GetTouch(0);
-            float touchX = touch.position.x;
+            float moveX = (Keyboard.current.rightArrowKey.isPressed ? 1 : 0) -
+                          (Keyboard.current.leftArrowKey.isPressed ? 1 : 0);
+            transform.Translate(new Vector3(moveX, 0, 0) * moveSpeed * Time.deltaTime);
+        }
 
-            if(touchX < screenWidth / 2)
+        // 마우스 입력 (에디터 테스트용)
+         if (Mouse.current != null)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame &&
+                (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
             {
-                transform.Translate(Vector3.left * moveSpeed * Time.deltaTime);
+                Vector3 worldPos = cam.ScreenToWorldPoint(new Vector3(
+                    Mouse.current.position.x.ReadValue(),
+                    Mouse.current.position.y.ReadValue(), 0));
+                Collider2D hit = Physics2D.OverlapPoint(worldPos);
+                if (hit != null && hit.gameObject == gameObject)
+                {
+                    isDragging = true;
+                }
             }
-            else
+
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
-                transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);
+                isDragging = false;
+            }
+
+            if (isDragging)
+            {
+                Vector3 worldPos = cam.ScreenToWorldPoint(new Vector3(
+                    Mouse.current.position.x.ReadValue(),
+                    Mouse.current.position.y.ReadValue(), 0));
+                float targetX = Mathf.Clamp(worldPos.x, minX, maxX);
+                transform.position = new Vector3(
+                    Mathf.MoveTowards(transform.position.x, targetX, moveSpeed * Time.deltaTime),
+                    transform.position.y, transform.position.z);
             }
         }
 
-        //이동 범위 제한
+        // 터치 입력 (모바일)
+         if (Touchscreen.current != null)
+        {
+            var touch = Touchscreen.current.primaryTouch;
+            int touchId = touch.touchId.ReadValue();
+            bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touchId);
+
+            if (touch.press.wasPressedThisFrame && !overUI)
+            {
+                Vector3 worldPos = cam.ScreenToWorldPoint(new Vector3(
+                    touch.position.x.ReadValue(), touch.position.y.ReadValue(), 0));
+                Collider2D hit = Physics2D.OverlapPoint(worldPos);
+                if (hit != null && hit.gameObject == gameObject)
+                {
+                    isDragging = true;
+                }
+            }
+
+            if (touch.press.wasReleasedThisFrame)
+            {
+                isDragging = false;
+            }
+
+            if (isDragging && touch.press.isPressed)
+            {
+                Vector3 worldPos = cam.ScreenToWorldPoint(new Vector3(
+                    touch.position.x.ReadValue(), touch.position.y.ReadValue(), 0));
+                float targetX = Mathf.Clamp(worldPos.x, minX, maxX);
+                transform.position = new Vector3(
+                    Mathf.MoveTowards(transform.position.x, targetX, moveSpeed * Time.deltaTime),
+                    transform.position.y, transform.position.z);
+            }
+        }
+        // 이동 범위 제한
         float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
         transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
+        
+        }
+        //바구니 확대
+        public void SetBasketScale(float multiplier)
+            {
+                transform.localScale = Vector3.one * multiplier;
+            }
     }
-}
+
