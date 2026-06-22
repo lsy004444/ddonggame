@@ -4,6 +4,7 @@ using UnityEngine.Audio;
 public class SettingsManager : MonoBehaviour
 {
     public GameObject settingsPanel;
+    public GameObject settingsButton;
     public AudioMixer audioMixer;
 
     //게임 시작 볼륨 고정
@@ -24,6 +25,7 @@ public class SettingsManager : MonoBehaviour
     public void CloseSettings()
     {
         settingsPanel.SetActive(false);
+        if (settingsButton != null) settingsButton.SetActive(true);
         if (GameManager.instance != null)
             GameManager.instance.ResumeGame();
     }

@@ -324,7 +324,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.1317, y: -478}
+  m_AnchoredPosition: {x: 7, y: -480}
   m_SizeDelta: {x: 702.5267, y: 138.1766}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &471854616
@@ -347,10 +347,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'score:'
+  m_text: "\uC810\uC218:"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
+  m_sharedMaterial: {fileID: 1541765703418285989, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -723,10 +723,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: high score !
+  m_text: "\uCD5C\uACE0\uAE30\uB85D:"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
+  m_sharedMaterial: {fileID: 1541765703418285989, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1311,7 +1311,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -21, y: -200}
+  m_AnchoredPosition: {x: -66, y: -214}
   m_SizeDelta: {x: 495.6804, y: 225.9998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2060566888
@@ -1334,10 +1334,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'files: '
+  m_text: "\uB625\uD30C\uB9AC\uC218:"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
+  m_sharedMaterial: {fileID: 1541765703418285989, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1448,7 +1448,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -119, y: -286}
+  m_AnchoredPosition: {x: -102, y: -293}
   m_SizeDelta: {x: 408.1863, y: 168.1595}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2089620108
@@ -1471,10 +1471,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'ddong: '
+  m_text: "\uB625\uAC1C\uC218: "
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
+  m_sharedMaterial: {fileID: 1541765703418285989, guid: 3b3e922dd98ba94499defa31b19146ef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
