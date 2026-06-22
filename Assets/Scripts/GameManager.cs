@@ -47,7 +47,9 @@ public class GameManager : MonoBehaviour
         if(scene.name == "MiniGame")
             {
                 isMiniGame = true;
-                
+                currentTime = playTimeLimit;
+                gameOver = false;
+                poopCount = 0;
                 Time.timeScale = 1f;
                 Debug.Log("MiniGame 리셋됨 currentTime: " + currentTime + " isMiniGame: " + isMiniGame);
                 StartCoroutine(FindUIAfterLoad());

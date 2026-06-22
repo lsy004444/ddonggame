@@ -90,6 +90,8 @@ public class ResourceManager : MonoBehaviour
                 }
             }
             LoadData();
+            //앱 다시 시작하면 도감 초기화
+            ResetDiscoveredData(); 
         }
 
     private void Start()

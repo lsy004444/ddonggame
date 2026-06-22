@@ -157,6 +157,9 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
         {
             Debug.LogError("ResourceManager.Instance를 찾을 수 없습니다! 하이어라키에 ResourceManager가 있는지 확인하세요.");
         }
+        //경작 bgm 추가
+        if (SFXManager.Instance != null)
+        SFXManager.Instance.PlayHarvest(); 
 
         currentActiveSeed = null;
         isHarvestable = false;

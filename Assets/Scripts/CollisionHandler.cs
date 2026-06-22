@@ -11,6 +11,7 @@ public class CollisionHandler : MonoBehaviour
                 GameManager.instance.AddPoop(1);
 
             PoopController poopCtrl = other.GetComponent<PoopController>();
+            //확인용
             Debug.Log("poopCtrl: " + poopCtrl);
             Debug.Log("poopType: " + (poopCtrl != null ? poopCtrl.poopType?.ToString() : "null"));
             Debug.Log("ResouceManager: " + ResourceManager.Instance);
@@ -19,6 +20,9 @@ public class CollisionHandler : MonoBehaviour
             {
                 ResourceManager.Instance.AddPoop(poopCtrl.poopType, 1);
             }
+
+            if(SFXManager.Instance != null)
+                SFXManager.Instance.PlayPoopCatch();
             Destroy(other.gameObject);
         }
         else if (other.CompareTag("Tissue"))
@@ -26,6 +30,10 @@ public class CollisionHandler : MonoBehaviour
             if (GameManager.instance != null)
                 GameManager.instance.AddPoop(-5);
 
+            if (SFXManager.Instance != null)
+                SFXManager.Instance.PlayPoopCatch();
+
+            //확인용
             Debug.Log("휴지 받음! 똥 5개 감소");
             Destroy(other.gameObject);
         }
