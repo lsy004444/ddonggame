@@ -104,6 +104,13 @@ public class FarmManager : MonoBehaviour
 
         if (slot.IsEmpty)
         {
+            // 🔍 [방어 코드 추가] ResourceManager 싱글톤 인스턴스 존재 여부 체크
+            if (ResourceManager.Instance == null)
+            {
+                Debug.LogError("<color=red>[FarmManager]</color> ResourceManager.Instance가 null입니다! Hierarchy 창에 ResourceManager 오브젝트가 유실되었거나 Script 연결이 깨졌는지 확인하세요.");
+                return;
+            }
+
             PoopType p = ResourceManager.Instance.GetRandomPoopFromInventory();
             if (p != null)
             {
