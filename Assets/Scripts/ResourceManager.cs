@@ -58,8 +58,8 @@ public class ResourceManager : MonoBehaviour
     private System.Collections.IEnumerator ReconnectUI()
     {
         yield return null;
-        
-        GameObject countObj = GameObject.Find("PoopCountText");
+    
+        GameObject countObj = GameObject.Find("InventoryPoopCountText"); // ← 수정
         if (countObj != null) poopCountText = countObj.GetComponent<TextMeshProUGUI>();
         
         GameObject fliesObj = GameObject.Find("PoopFliesText");
@@ -197,7 +197,7 @@ public class ResourceManager : MonoBehaviour
     {
         if (poopCountText == null)
         {
-            GameObject obj = GameObject.Find("PoopCountText");
+            GameObject obj = GameObject.Find("InventoryPoopCountText");
             if (obj != null) poopCountText = obj.GetComponent<TextMeshProUGUI>();
             
         }
@@ -256,22 +256,31 @@ public class ResourceManager : MonoBehaviour
     
     public void LoadData()
     {
-        poopFlies = PlayerPrefs.GetInt("PoopFliesData", 0);
-        
-        // 딕셔너리에 등록된 모든 똥 종류의 기존 저장값을 불러옴
-        var keys = new List<PoopType>(poopCounts.Keys);
-        foreach (var type in keys)
+    poopFlies = PlayerPrefs.GetInt("PoopFliesData", 0);
+
+    // 이월된 화폐가 있으면 적용 (게임 재시작 시)
+    int carryOver = PlayerPrefs.GetInt("CarryOverPoopFlies", -1);
+    if (carryOver >= 0)
+    {
+        poopFlies = carryOver;
+        PlayerPrefs.DeleteKey("CarryOverPoopFlies");
+        Debug.Log($"<color=yellow>[화폐 이월]</color> 다음 판으로 {carryOver} 똥파리가 이월되었습니다.");
+    }
+
+    // 딕셔너리에 등록된 모든 똥 종류의 기존 저장값을 불러옴
+    var keys = new List<PoopType>(poopCounts.Keys);
+    foreach (var type in keys)
+    {
+        if (type != null)
         {
-            if (type != null)
+            poopCounts[type] = PlayerPrefs.GetInt("Poop_" + type.name, 0);
+            if (PlayerPrefs.GetInt("Discovered_" + type.name, 0) == 1)
             {
-                poopCounts[type] = PlayerPrefs.GetInt("Poop_" + type.name, 0);
-                if (PlayerPrefs.GetInt("Discovered_" + type.name, 0) == 1)
-                    {
-                        discoveredPoops.Add(type.name);
-                    }
+                discoveredPoops.Add(type.name);
             }
         }
-        Debug.Log("<color=green>[데이터 로드 완료]</color> 이전 저장 데이터를 성공적으로 불러왔습니다.");
+    }
+    Debug.Log("<color=green>[데이터 로드 완료]</color> 이전 저장 데이터를 성공적으로 불러왔습니다.");
     }
 
     public bool IsDiscovered(PoopType type)

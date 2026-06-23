@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 마우스 입력 (에디터 테스트용)
-         if (Mouse.current != null)
+        if (Mouse.current != null)
         {
             if (Mouse.current.leftButton.wasPressedThisFrame &&
                 (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 터치 입력 (모바일)
-         if (Touchscreen.current != null)
+        if (Touchscreen.current != null)
         {
             var touch = Touchscreen.current.primaryTouch;
             int touchId = touch.touchId.ReadValue();
@@ -94,15 +94,15 @@ public class PlayerController : MonoBehaviour
                     transform.position.y, transform.position.z);
             }
         }
+
         // 이동 범위 제한
         float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
         transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
-        
-        }
-        //바구니 확대
-        public void SetBasketScale(float multiplier)
-            {
-                transform.localScale = Vector3.one * multiplier;
-            }
     }
 
+    // 바구니 확대용
+    public void SetBasketScale(float multiplier)
+    {
+        transform.localScale = Vector3.one * multiplier;
+    }
+}

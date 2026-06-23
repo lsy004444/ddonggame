@@ -20,9 +20,10 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
     public float endY = 0f;          
     private RectTransform textRect;
 
-    [Header("상태 변수")]
-    private SeedData currentActiveSeed;
-    private float plantedTime;
+    [Header("상태 변수 (★FarmManager 접근을 위해 public 유지)")]
+    // FarmManager가 접근할 수 있도록 public은 유지하되, 인스펙터 혼선을 줄이기 위해 HideInInspector를 적용했습니다.
+    [HideInInspector] public SeedData currentActiveSeed;
+    [HideInInspector] public float plantedTime;
     public bool isHarvestable = false;
 
     public bool IsEmpty => currentActiveSeed == null;
@@ -37,7 +38,6 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
         if (growthSlider != null) growthSlider.gameObject.SetActive(false);
         if (harvestIcon != null) harvestIcon.SetActive(false);
 
-        // [수정] 컴포넌트가 아니라 게임 오브젝트 자체를 끕니다.
         if (cropImage != null) cropImage.gameObject.SetActive(false); 
     }
 
@@ -76,14 +76,13 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
             if (textRect != null) textRect.anchoredPosition = new Vector2(textRect.anchoredPosition.x, startY);
         }
 
-        // [수정] 오브젝트를 확실하게 켜고 색상을 불투명하게 만듭니다.
         if (cropImage != null)
         {
             if (currentActiveSeed.growthSprites != null && currentActiveSeed.growthSprites.Length > 0)
             {
-                cropImage.gameObject.SetActive(true); // 오브젝트 활성화
-                cropImage.enabled = true;             // 컴포넌트 활성화
-                cropImage.color = Color.white;        // 투명도 리셋 (Alpha 255)
+                cropImage.gameObject.SetActive(true); 
+                cropImage.enabled = true;             
+                cropImage.color = Color.white;        
                 cropImage.sprite = currentActiveSeed.growthSprites[0]; 
                 
                 Debug.Log($"<color=orange>[FarmSlot {myIndex}]</color> 작물 이미지 오브젝트 켜짐. 초기 이미지: 0번");
@@ -103,8 +102,6 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
         if (IsEmpty || isHarvestable || currentActiveSeed == null) return;
 
         float elapsed = Time.time - plantedTime;
-        
-        // 안전장치: 성장 시간이 0 이하이면 강제로 1초로 고정
         float targetGrowthTime = currentActiveSeed.growthTime <= 0 ? 1f : currentActiveSeed.growthTime;
         float progress = elapsed / targetGrowthTime;
         progress = Mathf.Clamp01(progress);
@@ -117,14 +114,12 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
             textRect.anchoredPosition = new Vector2(textRect.anchoredPosition.x, currentY);
         }
 
-        // 이미지 실시간 업데이트 + 디버그 로그 추가
         if (cropImage != null && currentActiveSeed.growthSprites != null && currentActiveSeed.growthSprites.Length > 0)
         {
             int growthStage = Mathf.Min(currentActiveSeed.growthSprites.Length - 1, Mathf.FloorToInt(progress * currentActiveSeed.growthSprites.Length));
             if (cropImage.sprite != currentActiveSeed.growthSprites[growthStage])
             {
                 cropImage.sprite = currentActiveSeed.growthSprites[growthStage];
-                // 이미지 바뀔 때마다 콘솔창에 신호를 보냅니다.
                 Debug.Log($"<color=yellow>[FarmSlot {myIndex}]</color> 작물 성장 중! 현재 이미지 단계: {growthStage} (진행도: {progress * 100}%)");
             }
         }
@@ -149,7 +144,7 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
 
         if (ResourceManager.Instance != null)
         {
-        // currentActiveSeed(현재 작물)의 rewardAmount(보상 수량)를 똥파리로 지급
+            // currentActiveSeed(현재 작물)의 rewardAmount(보상 수량)를 똥파리로 지급
             ResourceManager.Instance.AddPoopFlies(currentActiveSeed.rewardAmount); 
             Debug.Log($"<color=cyan>[보상 지급]</color> {currentActiveSeed.seedName} 수확 완료! 똥파리 {currentActiveSeed.rewardAmount}마리 획득!");
         }
@@ -165,8 +160,71 @@ public class FarmSlot : MonoBehaviour, IPointerClickHandler
         isHarvestable = false;
 
         if (plantText != null) plantText.enabled = false;
-        if (cropImage != null) cropImage.gameObject.SetActive(false); // 수확 시 오브젝트 끄기
+        if (cropImage != null) cropImage.gameObject.SetActive(false); 
         if (harvestIcon != null) harvestIcon.SetActive(false);
         if (growthSlider != null) growthSlider.gameObject.SetActive(false);
+    }
+
+    // ===================================================================
+    // [완벽 복구] FarmManager가 미니게임에서 복귀할 때 호출하여 UI 및 연출을 복구하는 함수
+    // ===================================================================
+    public void RestoreSlot(SeedData savedSeed, float savedTime, bool savedHarvestable)
+    {
+        currentActiveSeed = savedSeed;
+        plantedTime = savedTime;
+        isHarvestable = savedHarvestable;
+
+        if (currentActiveSeed != null)
+        {
+            // 1. 텍스트 UI 및 성장 연출 위치(Y축) 복구
+            if (plantText != null)
+            {
+                plantText.text = currentActiveSeed.seedName;
+                plantText.enabled = true;
+                if (textRect != null) 
+                    textRect.anchoredPosition = new Vector2(textRect.anchoredPosition.x, isHarvestable ? endY : startY);
+            }
+
+            // 2. 작물 이미지 오브젝트 및 진행도별 스프라이트 복구
+            if (cropImage != null)
+            {
+                cropImage.gameObject.SetActive(true);
+                cropImage.enabled = true;
+                cropImage.color = Color.white;
+
+                if (currentActiveSeed.growthSprites != null && currentActiveSeed.growthSprites.Length > 0)
+                {
+                    if (isHarvestable)
+                    {
+                        // 이미 완전히 다 자란 상태라면 마지막 성장 스프라이트로 고정
+                        cropImage.sprite = currentActiveSeed.growthSprites[currentActiveSeed.growthSprites.Length - 1];
+                    }
+                    else
+                    {
+                        // 미니게임에 가 있던 시간 동안 실시간으로 자란 진행도를 계산해서 알맞은 스프라이트 매칭
+                        float elapsed = Time.time - plantedTime;
+                        float targetGrowthTime = currentActiveSeed.growthTime <= 0 ? 1f : currentActiveSeed.growthTime;
+                        float progress = Mathf.Clamp01(elapsed / targetGrowthTime);
+                        
+                        int growthStage = Mathf.Min(currentActiveSeed.growthSprites.Length - 1, Mathf.FloorToInt(progress * currentActiveSeed.growthSprites.Length));
+                        cropImage.sprite = currentActiveSeed.growthSprites[growthStage];
+                    }
+                }
+            }
+
+            // 3. 수확 가능 여부에 따라 슬라이더 혹은 수확 아이콘 켜기
+            if (isHarvestable)
+            {
+                if (growthSlider != null) growthSlider.gameObject.SetActive(false);
+                if (harvestIcon != null) harvestIcon.SetActive(true);
+            }
+            else
+            {
+                if (growthSlider != null) growthSlider.gameObject.SetActive(true);
+                if (harvestIcon != null) harvestIcon.SetActive(false);
+            }
+
+            Debug.Log($"<color=green>[FarmSlot {myIndex}]</color> 복구 성공! UI 연출 및 성장 스프라이트 재동기화 완료.");
+        }
     }
 }

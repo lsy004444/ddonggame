@@ -18,6 +18,6 @@ MonoBehaviour:
   - {fileID: 1467766943, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
   - {fileID: 1331040184, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
   - {fileID: 917386081, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: 305563627, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
+  - {fileID: -7911500854194415567, guid: c7657642f574d8742be3f0a953b0dcaa, type: 3}
   rewardPoopType: 0
   rewardAmount: 20
