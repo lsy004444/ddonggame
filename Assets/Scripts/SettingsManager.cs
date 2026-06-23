@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -7,12 +8,25 @@ public class SettingsManager : MonoBehaviour
     public GameObject settingsButton;
     public AudioMixer audioMixer;
 
-    //게임 시작 볼륨 고정
+    [Header("슬라이더 UI 연결")]
+    public Slider masterSlider;
+    public Slider bgmSlider;
+    public Slider sfxSlider;
+
+    private bool isReadyToChangeVolume = false;
+
     void Start()
     {
         SetMasterVolume(0.5f);
         SetBGMVolume(0.5f);
         SetSFXVolume(0.5f);
+
+        Invoke("EnableVolumeControl", 0.1f);
+    }
+
+    private void EnableVolumeControl()
+    {
+        isReadyToChangeVolume = true;
     }
 
     public void OpenSettings()
@@ -30,23 +44,27 @@ public class SettingsManager : MonoBehaviour
             GameManager.instance.ResumeGame();
     }
 
+    public void SetMasterVolume(float volume)
+    {
+        if (!isReadyToChangeVolume) return;
+
+        float dB = volume > 0.0001f ? (Mathf.Log10(volume) + 0.3f) * 40 : -80f;
+        audioMixer.SetFloat("Master", dB);
+    }
+
     public void SetBGMVolume(float volume)
     {
+        if (!isReadyToChangeVolume) return;
+
         float dB = volume > 0.0001f ? (Mathf.Log10(volume) + 0.3f) * 40 : -80f;
         audioMixer.SetFloat("BGM", dB);
     }
 
     public void SetSFXVolume(float volume)
     {
+        if (!isReadyToChangeVolume) return;
+
         float dB = volume > 0.0001f ? (Mathf.Log10(volume) + 0.3f) * 40 : -80f;
         audioMixer.SetFloat("SFX", dB);
-    }
-
-    public void SetMasterVolume(float volume)
-    {
-        //확인용 로그
-        Debug.Log("Master 볼륨 변경 시도: " + volume + " / dB 변환값: " + (volume > 0.0001f ? Mathf.Log10(volume) * 20 : -80f));
-        float dB = volume > 0.0001f ? ( Mathf.Log10(volume) + 0.3f) * 40 : -80f;
-        audioMixer.SetFloat("Master", dB);
     }
 }

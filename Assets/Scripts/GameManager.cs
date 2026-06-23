@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public static GameManager instance => Instance;
 
-    private bool isMiniGame = false;
+    private bool isRetrying = false;
 
     [Header("UI 패널 설정")]
     public GameObject settingsPanel;
@@ -29,14 +29,29 @@ public class GameManager : MonoBehaviour
 
     [Header("똥 & 파리 카운트 UI")]
     public TextMesh poopFliesTextMesh;
+    public TextMeshProUGUI poopFliesText;
     public int poopCount = 0;
     public TextMeshProUGUI poopCountText;
     public TextMesh poopCountTextMesh;
 
     [Header("바구니 설정")]
-    [Tooltip("바구니가 가득 차는 최대 똥 개수입니다.")]
     public int maxBasketCapacity = 10;
     private FarmerVisual farmerVisual;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            currentTime = playTimeLimit;
+            gameOver = false;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void OnEnable()
     {
@@ -48,22 +63,29 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    private bool IsPlayableScene(string sceneName)
+    {
+        return sceneName == "MiniGame" || sceneName == "HomeScene";
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("OnSceneLoaded 불림: " + scene.name);
+        Time.timeScale = 1f;
 
-        if (scene.name == "MiniGame")
+        // 재시작(한번더)일 때만 타이머/똥카운트/도감 리셋
+        if (isRetrying && scene.name == "MiniGame")
         {
-            isMiniGame = true;
-            //currentTime = playTimeLimit;
-            //gameOver = false;
+            currentTime = playTimeLimit;
+            gameOver = false;
             poopCount = 0;
-            Time.timeScale = 1f;
-            StartCoroutine(FindUIAfterLoad());
+            isRetrying = false;
+
+            if (ResourceManager.Instance != null)
+                ResourceManager.Instance.ResetDiscoveredData();
         }
+
         if (scene.name == "EndingScene")
         {
-            isMiniGame = false;
             Camera mainCam = Camera.main;
             if (mainCam != null)
             {
@@ -72,29 +94,31 @@ public class GameManager : MonoBehaviour
                 mainCam.clearFlags = CameraClearFlags.SolidColor;
                 mainCam.backgroundColor = Color.white;
             }
-            return;
-        }
-        if (scene.name == "HomeScene")
-        {
-            isMiniGame = false;
+            return; // 엔딩에서는 UI 재탐색 불필요
         }
 
-        Debug.Log("ResourceManager: " + ResourceManager.Instance);
-        if (ResourceManager.Instance != null)
+        if (IsPlayableScene(scene.name))
         {
-            Debug.Log("똥파리 수: " + ResourceManager.Instance.GetPoopFliesCount());
+            StartCoroutine(FindUIAfterLoad());
         }
     }
 
     private System.Collections.IEnumerator FindUIAfterLoad()
     {
         yield return null;
-        poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
-        poopCountText = GameObject.Find("PoopCountText")?.GetComponent<TextMeshProUGUI>(); 
 
+        poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
+        poopCountText = GameObject.Find("PoopCountText")?.GetComponent<TextMeshProUGUI>();
         timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
+        timerText = GameObject.Find("TimerText")?.GetComponent<TextMeshProUGUI>();
         poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
         timerSlider = GameObject.Find("TimeSlider")?.GetComponent<Slider>();
+
+        if (timerSlider != null)
+        {
+            timerSlider.maxValue = playTimeLimit;
+            timerSlider.value = currentTime; 
+        }
 
         farmerVisual = FindAnyObjectByType<FarmerVisual>();
         if (farmerVisual != null)
@@ -102,53 +126,29 @@ public class GameManager : MonoBehaviour
             farmerVisual.UpdateBasketVisual(poopCount, maxBasketCapacity);
         }
 
-        Debug.Log("코루틴 실행됨. poopFliesTextMesh: " + poopFliesTextMesh + " / FarmerVisual: " + farmerVisual);
-
-        if (poopFliesTextMesh != null && ResourceManager.Instance != null)
-            poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
+        RefreshAllUI();
     }
 
-    private void Awake()
+    private void RefreshAllUI()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (poopCountText != null) poopCountText.text = "똥: " + poopCount;
+        if (poopCountTextMesh != null) poopCountTextMesh.text = "똥: " + poopCount;
+
+        int flies = ResourceManager.Instance != null ? ResourceManager.Instance.GetPoopFliesCount() : 0;
+        if (poopFliesTextMesh != null) poopFliesTextMesh.text = "똥파리: " + flies;
+        if (poopFliesText != null) poopFliesText.text = "똥파리: " + flies;
+
+        UpdateTimerUI();
     }
-
-    void Start()
-    {
-        isMiniGame = (SceneManager.GetActiveScene().name == "MiniGame");
-        currentTime = playTimeLimit;
-        gameOver = false;
-        poopCount = 0;
-        Time.timeScale = 1f;
-
-        poopFliesTextMesh = GameObject.Find("PoopFliesText")?.GetComponent<TextMesh>();
-
-        if (SceneManager.GetActiveScene().name == "MiniGame")
-        {
-            poopCountTextMesh = GameObject.Find("PoopCountText")?.GetComponent<TextMesh>();
-            timerTextMesh = GameObject.Find("TimerText")?.GetComponent<TextMesh>();
-
-            farmerVisual = FindAnyObjectByType<FarmerVisual>();
-            if (farmerVisual != null) farmerVisual.UpdateBasketVisual(poopCount, maxBasketCapacity);
-        }
-
-        Debug.Log("GameManager Start() 호출됨 - 현재 씬: " + SceneManager.GetActiveScene().name);
-    }
-
     private void Update()
     {
-        if (!gameOver && currentTime > 0)
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (!gameOver && IsPlayableScene(currentScene) && currentTime > 0)
         {
             currentTime -= Time.deltaTime;
             UpdateTimerUI();
+
             if (currentTime <= 0)
             {
                 currentTime = 0;
@@ -170,14 +170,9 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("UnhealthyPoop", savedPoop + poopCount);
         PlayerPrefs.Save();
 
-        Debug.Log($"[데이터 연동] 미니게임 똥 {poopCount}개가 메인 데이터에 누적 저장되었습니다! (총: {savedPoop + poopCount}개)");
-
-        
-
         if (gameOverPanel != null) gameOverPanel.SetActive(true);
         if (finalScoreText != null) finalScoreText.text = "최종 점수: " + finalScore.ToString();
 
-        Debug.Log("EndingScene으로 이동 시도");
         SceneManager.LoadScene("EndingScene");
     }
 
@@ -192,9 +187,6 @@ public class GameManager : MonoBehaviour
 
         if (timerText != null) timerText.text = time;
         if (timerTextMesh != null) timerTextMesh.text = time;
-
-        if (poopFliesTextMesh != null && ResourceManager.Instance != null)
-            poopFliesTextMesh.text = "똥파리: " + ResourceManager.Instance.GetPoopFliesCount();
     }
 
     public void AddPoop(int amount)
@@ -202,24 +194,20 @@ public class GameManager : MonoBehaviour
         poopCount += amount;
         if (poopCount < 0) poopCount = 0;
 
-        if (poopCountText != null) poopCountText.text = "똥: " + poopCount;
-        if (poopCountTextMesh != null) poopCountTextMesh.text = "똥: " + poopCount;
+        RefreshAllUI();
 
         if (farmerVisual != null)
         {
             farmerVisual.UpdateBasketVisual(poopCount, maxBasketCapacity);
         }
-
-        Debug.Log("똥 개수 추가됨: " + poopCount);
     }
 
+    // EndingManager의 "한번더" 버튼이 이거 호출
     public void RetryGame()
     {
-        isMiniGame = true;
-        currentTime = playTimeLimit;
-        gameOver=false;
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        isRetrying = true;
+        SceneManager.LoadScene("MiniGame");
+       
     }
 
     public void ShareScore()
@@ -227,7 +215,6 @@ public class GameManager : MonoBehaviour
         int score = PlayerPrefs.GetInt("FinalScore", 0);
         string shareText = "나의 농장 방어 점수는 " + score + "점!";
         GUIUtility.systemCopyBuffer = shareText;
-        Debug.Log("클립보드에 복사 완료: " + shareText);
     }
 
     public void PauseGame()

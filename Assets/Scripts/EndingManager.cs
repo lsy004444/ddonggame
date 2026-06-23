@@ -58,9 +58,16 @@ public class EndingManager : MonoBehaviour
         {
             int carry = Mathf.FloorToInt(ResourceManager.Instance.GetPoopFliesCount() * 0.2f);
             PlayerPrefs.SetInt("CarryOverPoopFlies", carry);
-            //한번더 누르면 도감 목록 초기화
             ResourceManager.Instance.ResetDiscoveredData();
         }
-        SceneManager.LoadScene("MiniGame");
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RetryGame();   // ← SceneManager.LoadScene 직접 호출 대신 이걸로 교체
+        }
+        else
+        {
+            SceneManager.LoadScene("MiniGame");
+        }
     }
 }

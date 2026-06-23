@@ -9,8 +9,8 @@ public class MenuController : MonoBehaviour
     // [기존 코드] 게임 시작 버튼을 눌렀을 때 실행되는 함수
     public void ClickGameStart()
     {
-        // 괄호 안에는 지안님의 진짜 '인게임 씬 이름'을 정확하게 적어주셔야 합니다!
-        SceneManager.LoadScene("HomeScene"); 
+        //게임시작 버튼 클릭 시 미니게임으로 이동
+        SceneManager.LoadScene("MiniGame"); 
     }
 
     // 가이드 버튼(책 모양)을 눌렀을 때 팝업창을 켜는 함수

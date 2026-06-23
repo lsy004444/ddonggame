@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poopName: "\uCD08\uB85D\uC0C9\uB625"
   description: 
-  poopSprite: {fileID: 0}
+  poopSprite: {fileID: -5410837564642465411, guid: a5baa6e3518c25947809f1fa50ed15d1, type: 3}
   rarity: 1
   possibleSeeds:
   - {fileID: 11400000, guid: c6a7bf1a787ced444a07ae8d59404bd2, type: 2}
