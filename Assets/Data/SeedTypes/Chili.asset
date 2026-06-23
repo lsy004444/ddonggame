@@ -15,9 +15,9 @@ MonoBehaviour:
   seedName: Chili
   growthTime: 15
   growthSprites:
-  - {fileID: 1467766943, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: 1331040184, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: 917386081, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: -7911500854194415567, guid: c7657642f574d8742be3f0a953b0dcaa, type: 3}
+  - {fileID: -8474628828388458650, guid: cffb9d2002c99bd44b8753046bf42d31, type: 3}
+  - {fileID: -5446830176969611512, guid: e1501d1bddae48440ba30b3cc915e3cb, type: 3}
+  - {fileID: -6995647186193230484, guid: afadbfa118223a54bb729e3135b74280, type: 3}
+  - {fileID: -8342760855892872081, guid: e17287d5e4487554fbb5b0c566eb2562, type: 3}
   rewardPoopType: 0
   rewardAmount: 20

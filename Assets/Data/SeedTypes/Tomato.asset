@@ -15,9 +15,9 @@ MonoBehaviour:
   seedName: Tomato
   growthTime: 7
   growthSprites:
-  - {fileID: -1189957823, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: 929062848, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: -1676593613, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: -5954900402872363398, guid: 2de995774472f61459b6786a18207a19, type: 3}
+  - {fileID: 8582164875965700268, guid: ced53cad3f4faed44903f74b42eea7ac, type: 3}
+  - {fileID: -7939402670000602759, guid: e595fd5ca8fc747499d7003fa7d9cdd7, type: 3}
+  - {fileID: 1609132825277822300, guid: af31092c573dd7a4997b31c0470facce, type: 3}
+  - {fileID: 1820142656160495870, guid: c0ce0370002cd854fae9780933ef6b35, type: 3}
   rewardPoopType: 0
   rewardAmount: 5

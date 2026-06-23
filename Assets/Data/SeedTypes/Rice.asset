@@ -15,9 +15,9 @@ MonoBehaviour:
   seedName: Rice
   growthTime: 3
   growthSprites:
-  - {fileID: -1222588755, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: -479291201, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: 1229181455, guid: 62d6e9051badd3a4d8704626d37dc622, type: 3}
-  - {fileID: 5001337456934552027, guid: 900d48b7cca7b6a46b7e112a5dac5082, type: 3}
+  - {fileID: 7107938456851054059, guid: d39a094133c204646af3a98516961c21, type: 3}
+  - {fileID: -6648530596125696319, guid: d96f6a61f2c05504490f00c64780cb9a, type: 3}
+  - {fileID: 7893695583661735397, guid: aa9ee26827b2c724597222c516a4b1c3, type: 3}
+  - {fileID: 9106184282533566599, guid: d8d4cd550ab62394fa5947568997bc44, type: 3}
   rewardPoopType: 0
   rewardAmount: 2
